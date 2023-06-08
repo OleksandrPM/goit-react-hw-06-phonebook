@@ -1,0 +1,4 @@
+const appStore =  {
+  contacts: [],
+  filter: ""
+}

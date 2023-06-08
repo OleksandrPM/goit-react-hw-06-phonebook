@@ -1,0 +1,26 @@
+.contact_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact_item {
+  width: 400px;
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete_all_btn {
+  width: 200px;
+  padding: 5px;
+  font-weight: bold;
+  border-radius: 5px;
+  border: none;
+  background-color: lightcoral;
+}
+.delete_all_btn:hover,
+.delete_all_btn:focus {
+  background-color: red;
+}
