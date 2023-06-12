@@ -1,18 +1,21 @@
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAll } from 'redux/contacts/contactsSlice';
+import { getContacts } from 'redux/contacts/selectors';
+import { getFilter } from 'redux/filter/selectors';
 import Contact from './Contact';
 import css from './ContactList.module.css';
 
-export default ContactList;
+export default function ContactList() {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
-ContactList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  filter: PropTypes.string.isRequired,
-  onBtnClick: PropTypes.func.isRequired,
-  clearPhonebook: PropTypes.func.isRequired,
-};
-
-function ContactList({ contacts, filter, onBtnClick, clearPhonebook }) {
   const renderingContacts = filterContacts(contacts, filter);
+
+  const sendDeleteAll = () => {
+    dispatch(deleteAll());
+  };
+
   return (
     <>
       {contacts.length > 0 ? (
@@ -23,18 +26,14 @@ function ContactList({ contacts, filter, onBtnClick, clearPhonebook }) {
                 const { id, name, number } = contact;
                 return (
                   <li className={css.contact_item} key={id}>
-                    <Contact
-                      name={name}
-                      number={number}
-                      onClick={() => onBtnClick(id)}
-                    />
+                    <Contact name={name} number={number} id={id} />
                   </li>
                 );
               })}
             </ul>
             <button
               type="button"
-              onClick={clearPhonebook}
+              onClick={sendDeleteAll}
               className={css.delete_all_btn}
             >
               Delete all contacts

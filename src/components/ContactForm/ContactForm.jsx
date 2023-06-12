@@ -1,33 +1,42 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from 'redux/contacts/selectors';
+import { addContact } from 'redux/contacts/contactsSlice';
 import css from './ContactForm.module.css';
 
-export default ContactForm;
-
-ContactForm.propTypes = { onSubmit: PropTypes.func.isRequired };
-
-function ContactForm({ onSubmit }) {
+export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const onInputChange = event => {
-    const { name, value } = event.currentTarget;
-
-    if (name === 'name') {
-      setName(value);
-    }
-    if (name === 'number') {
-      setNumber(value);
-    }
-  };
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
   const onFormBtnClick = event => {
     event.preventDefault();
     const form = event.currentTarget;
     setName(form.elements.name.value.trim());
     setNumber(form.elements.number.value.trim());
-    onSubmit({ name, number });
+    sendAddContact();
     form.reset();
+  };
+
+  const sendAddContact = () => {
+    if (!isContactPresent(name, number, contacts)) {
+      dispatch(addContact(name, number));
+    } else {
+      alert(`${name} is already in the contacts`);
+    }
+  };
+
+  const onInputChange = event => {
+    const { name, value } = event.currentTarget;
+
+    if (name === 'name') {
+      setName(value.trim());
+    }
+    if (name === 'number') {
+      setNumber(value.trim());
+    }
   };
 
   return (
@@ -58,4 +67,16 @@ function ContactForm({ onSubmit }) {
       <button type="submit">Add contact</button>
     </form>
   );
+}
+
+function isContactPresent(name, number, contacts) {
+  if (contacts.length > 0) {
+    return contacts.find(
+      contact =>
+        contact.name.toLowerCase() === name.toLowerCase() &&
+        contact.number === number
+    );
+  } else {
+    return false;
+  }
 }
